@@ -43,71 +43,92 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
                             }
                         }
                         case "team" -> {
-                            String subOption = args[1];
-                            if (validSubOptions(option).contains(subOption)) {
-                                switch (subOption) {
-                                    case "create" -> {
-                                        Team team = GameController.getInstance().getPlayerTeam(player);
-                                        if (team == null) {
-                                            team = new Team(player);
-                                            GameController.getInstance().getTeams().add(team);
-                                            ServerUtilities.sendBroadcastMessage(
-                                                    ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
-                                                            player.getName() + "</color></bold> ha creado un nuevo equipo")
-                                            );
-                                        } else {
-                                            ServerUtilities.sendServerMessage(player, "§cYa perteneces a un equipo");
+                            if (args.length > 1) {
+                                String subOption = args[1];
+                                if (validSubOptions(option).contains(subOption)) {
+                                    switch (subOption) {
+                                        case "create" -> {
+                                            Team team = GameController.getInstance().getPlayerTeam(player);
+                                            if (team == null) {
+                                                team = new Team(player);
+                                                GameController.getInstance().getTeams().add(team);
+                                                ServerUtilities.sendBroadcastMessage(
+                                                        ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
+                                                                player.getName() + "</color></bold> ha creado un nuevo equipo")
+                                                );
+                                            } else {
+                                                ServerUtilities.sendServerMessage(player, "§cYa perteneces a un equipo");
+                                            }
                                         }
-                                    }
-                                    case "join" -> {
-                                        String ownerName = args[2];
-                                        if (validSubOptions(subOption).contains(ownerName)) {
-                                            Player owner = Bukkit.getPlayer(ownerName);
-                                            if (owner != null) {
-                                                Team team = GameController.getInstance().getPlayerTeam(owner);
-                                                if (!team.getPlayers().contains(player.getUniqueId())) {
-                                                    team.addPlayer(player);
-                                                    ServerUtilities.sendBroadcastMessage(
-                                                            ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
-                                                                    player.getName() + "</color></bold> se ha unido al equipo de <bold><color:#0091AD>" +
-                                                                    owner.getName() + "</color></bold>")
-                                                    );
+                                        case "join" -> {
+                                            String ownerName = args[2];
+                                            if (validSubOptions(subOption).contains(ownerName)) {
+                                                Player owner = Bukkit.getPlayer(ownerName);
+                                                if (owner != null) {
+                                                    Team team = GameController.getInstance().getPlayerTeam(owner);
+                                                    if (!team.getPlayers().contains(player.getUniqueId())) {
+                                                        team.addPlayer(player);
+                                                        ServerUtilities.sendBroadcastMessage(
+                                                                ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
+                                                                        player.getName() + "</color></bold> se ha unido al equipo de <bold><color:#0091AD>" +
+                                                                        owner.getName() + "</color></bold>")
+                                                        );
+                                                    } else {
+                                                        ServerUtilities.sendServerMessage(player, "§cYa perteneces a un equipo");
+                                                    }
                                                 } else {
-                                                    ServerUtilities.sendServerMessage(player, "§cYa perteneces a un equipo");
+                                                    ServerUtilities.sendServerMessage(player, "§cError al obtener al dueño del equipo");
                                                 }
                                             } else {
-                                                ServerUtilities.sendServerMessage(player, "§cError al obtener al dueño del equipo");
+                                                ServerUtilities.sendServerMessage(player, "§cEse usuario no es dueño de un equipo");
                                             }
-                                        } else {
-                                            ServerUtilities.sendServerMessage(player, "§cEse usuario no es dueño de un equipo");
                                         }
-                                    }
-                                    case "leave" -> {
-                                        Team team = GameController.getInstance().getPlayerTeam(player);
-                                        if (team != null) {
-                                            Player owner = team.getOwnerPlayer();
-                                            if (owner != null) {
-                                                if (team.getOwner().equals(player.getUniqueId())) {
-                                                    ServerUtilities.sendBroadcastMessage(
-                                                            ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
-                                                                    player.getName() + "</color></bold> ha abandonado su propio equipo")
-                                                    );
+                                        case "leave" -> {
+                                            Team team = GameController.getInstance().getPlayerTeam(player);
+                                            if (team != null) {
+                                                Player owner = team.getOwnerPlayer();
+                                                if (owner != null) {
+                                                    if (team.getOwner().equals(player.getUniqueId())) {
+                                                        ServerUtilities.sendBroadcastMessage(
+                                                                ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
+                                                                        player.getName() + "</color></bold> ha abandonado su propio equipo")
+                                                        );
+                                                    } else {
+                                                        ServerUtilities.sendBroadcastMessage(
+                                                                ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
+                                                                        player.getName() + "</color></bold> ha abandonado al equipo de <bold><color:#0091AD>" +
+                                                                        owner.getName() + "</color></bold>")
+                                                        );
+                                                    }
+                                                    team.removePlayer(player);
                                                 } else {
-                                                    ServerUtilities.sendBroadcastMessage(
-                                                            ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
-                                                                    player.getName() + "</color></bold> ha abandonado al equipo de <bold><color:#0091AD>" +
-                                                                    owner.getName() + "</color></bold>")
-                                                    );
+                                                    ServerUtilities.sendServerMessage(player, "§cError al obtener al dueño del equipo");
                                                 }
-                                                team.removePlayer(player);
                                             } else {
-                                                ServerUtilities.sendServerMessage(player, "§cError al obtener al dueño del equipo");
+                                                ServerUtilities.sendServerMessage(player, "§cNo perteneces a un equipo");
                                             }
-                                        } else {
-                                            ServerUtilities.sendServerMessage(player, "§cNo perteneces a un equipo");
                                         }
                                     }
                                 }
+                            } else {
+                                ServerUtilities.sendServerMessage(player, "§cSelecciona una opción válida");
+                            }
+                        }
+                        case "start" -> {
+                            boolean validStart = true;
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                if (GameController.getInstance().getPlayerTeam(p) == null) {
+                                    ServerUtilities.sendServerMessage(player, "§cFaltan jugadores de elegir equipo");
+                                    validStart = false;
+                                    break;
+                                }
+                            }
+                            if (GameController.getInstance().getCurrentArena() == null) {
+                                ServerUtilities.sendServerMessage(player, "§cFalta seleccionar una arena");
+                                validStart = false;
+                            }
+                            if (validStart) {
+                                GameController.getInstance().startGame();
                             }
                         }
                     }
@@ -161,7 +182,7 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
     public List<String> validSubOptions(String option) {
         List<String> valid = new ArrayList<>();
         switch (option.toLowerCase()) {
-            case "arena" -> valid = GameController.getInstance().getArenas().keySet().stream().toList();
+            case "arena" -> valid = Arrays.asList("plains", "taiga");
             case "team" -> valid = Arrays.asList("create", "join", "leave");
             case "join" -> valid = GameController.getInstance().getTeams().stream()
                     .map(team -> Objects.requireNonNull(Bukkit.getPlayer(team.getOwner())).getName().toLowerCase())

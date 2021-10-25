@@ -54,8 +54,9 @@ public class BoardController {
                     lines.add("");
                     if (team != null) {
                         Player owner = team.getOwnerPlayer();
-                        lines.add("Líder de equipo: §d" + (owner != null ? owner.getName() : "Nadie" ));
-                        lines.add("Puntos de equipo: §d" + team.getCurrentPoints());
+                        lines.add("Líder: §d" + (owner != null ? owner.getName() : "Nadie" ));
+                        lines.add("Puntos: §d" + team.getCurrentPoints());
+                        lines.add("Compañeros: §d" + team.getPlayers().size());
                         lines.add("");
                     }
                     lines.add("§cEsperando...");

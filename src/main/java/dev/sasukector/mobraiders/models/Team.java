@@ -5,11 +5,14 @@ import dev.sasukector.mobraiders.helpers.ServerUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Team {
 
@@ -18,6 +21,7 @@ public class Team {
     private @Getter @Setter int currentRound;
     private @Getter int currentPoints;
     private @Getter @Setter Assault currentAssault;
+    private @Getter @Setter World world = null;
 
     public Team(Player player) {
         this.players = new ArrayList<>();
@@ -67,7 +71,38 @@ public class Team {
         return null;
     }
 
+    public List<Player> getPlayersList() {
+        return this.players.stream().map(Bukkit::getPlayer).collect(Collectors.toList());
+    }
+
     public void addPoints(int amount) {
         this.currentPoints += amount;
+    }
+
+    public Location getSpawn() {
+        Arena arena = GameController.getInstance().getCurrentArena();
+        if (arena != null) {
+            // Temp
+            World world = ServerUtilities.getWorld(arena.getName());
+            if (world != null) {
+                int[] spawn = arena.getSpawn();
+                return new Location(world, spawn[0], spawn[1], spawn[2]);
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public void reloadWorld() {
+
+    }
+
+    public void teleportToWorld() {
+        Location spawn = this.getSpawn();
+        if (spawn != null) {
+            this.getPlayersList().forEach(player -> player.teleport(spawn));
+        } else {
+            ServerUtilities.sendBroadcastMessage("§cError al tele transportar al equipo de " + this.getOwnerPlayer().getName());
+        }
     }
 }

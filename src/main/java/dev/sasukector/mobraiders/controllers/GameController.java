@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -17,13 +15,13 @@ import java.util.*;
 public class GameController {
 
     private static GameController instance = null;
-    private final @Getter Status currentStatus = Status.LOBBY;
+    private @Getter Status currentStatus = Status.LOBBY;
     private final @Getter List<Team> teams;
     private final @Getter Map<String, Arena> arenas;
     private @Getter @Setter Arena currentArena = null;
 
     public enum Status {
-        LOBBY, WAITING, PLAYING
+        LOBBY, STARTING, PLAYING
     }
 
     public static GameController getInstance() {
@@ -42,6 +40,7 @@ public class GameController {
     private void fillArenas() {
         this.arenas.put("plains", new Arena("plains", 0, 100, 0));
         this.arenas.put("taiga", new Arena("taiga", 0, 100, 0));
+        this.currentArena = this.arenas.get("taiga");
     }
 
     public void handlePlayerJoin(Player player) {
@@ -84,6 +83,21 @@ public class GameController {
     public Team getPlayerTeam(Player player) {
         Optional<Team> playerTeam = this.teams.stream().filter(team -> team.getPlayers().contains(player.getUniqueId())).findAny();
         return playerTeam.orElse(null);
+    }
+
+    public void startGame() {
+        ServerUtilities.sendAnnounceMensaje("Preparando el juego");
+        Bukkit.getOnlinePlayers().forEach(p -> {
+            p.playSound(p.getLocation(), "minecraft:block.note_block.bell", 1, 1);
+            p.setStatistic(Statistic.DEATHS, 0);
+        });
+        for (Team team : this.teams) {
+            team.reloadWorld();
+        }
+        this.currentStatus = Status.STARTING;
+        for (Team team : this.teams) {
+            team.teleportToWorld();
+        }
     }
 
 }
