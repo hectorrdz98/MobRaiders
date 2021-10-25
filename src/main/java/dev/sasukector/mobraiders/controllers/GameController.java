@@ -1,5 +1,6 @@
 package dev.sasukector.mobraiders.controllers;
 
+import dev.sasukector.mobraiders.MobRaiders;
 import dev.sasukector.mobraiders.helpers.ServerUtilities;
 import dev.sasukector.mobraiders.models.Arena;
 import dev.sasukector.mobraiders.models.Team;
@@ -9,8 +10,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameController {
 
@@ -95,9 +98,64 @@ public class GameController {
             team.reloadWorld();
         }
         this.currentStatus = Status.STARTING;
+        this.teleportCountDown(true);
+    }
+
+    public void teleportCountDown(boolean overworld) {
+        AtomicInteger remainingTime = new AtomicInteger(15);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (remainingTime.get() <= 0) {
+                    if (overworld) {
+                        teleportToOverworld();
+                    } else {
+                        Bukkit.getOnlinePlayers().forEach(p -> handlePlayerJoin(p));
+                    }
+                    cancel();
+                } else {
+                    Bukkit.getOnlinePlayers().forEach(p -> {
+                        if (remainingTime.get() <= 3) {
+                            p.playSound(p.getLocation(), "minecraft:block.note_block.xylophone", 1, 1);
+                        }
+                        p.sendActionBar(
+                                Component.text("Teletransporte en: " + remainingTime.get() + "s", TextColor.color(0x0091AD))
+                        );
+                    });
+                    remainingTime.addAndGet(-1);
+                }
+            }
+        }.runTaskTimer(MobRaiders.getInstance(), 0L, 20L);
+    }
+
+    public void teleportToOverworld() {
         for (Team team : this.teams) {
             team.teleportToWorld();
         }
+
+        AtomicInteger remainingTime = new AtomicInteger(30);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (remainingTime.get() <= 0) {
+                    ServerUtilities.sendAnnounceMensaje("¡Inicia la partida!");
+                    Bukkit.getOnlinePlayers().forEach(p ->
+                            p.playSound(p.getLocation(), "minecraft:music.effects.start", 1, 1));
+                    currentStatus = Status.PLAYING;
+                    cancel();
+                } else {
+                    Bukkit.getOnlinePlayers().forEach(p -> {
+                        if (remainingTime.get() <= 3) {
+                            p.playSound(p.getLocation(), "minecraft:block.note_block.xylophone", 1, 1);
+                        }
+                        p.sendActionBar(
+                                Component.text("La partida inicia en: " + remainingTime.get() + "s", TextColor.color(0x0091AD))
+                        );
+                    });
+                    remainingTime.addAndGet(-1);
+                }
+            }
+        }.runTaskTimer(MobRaiders.getInstance(), 0L, 20L);
     }
 
 }
