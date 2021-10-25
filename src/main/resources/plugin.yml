@@ -1,0 +1,11 @@
+name: MobRaiders
+version: '${project.version}'
+main: dev.sasukector.mobraiders.MobRaiders
+api-version: 1.17
+authors: [ Sasukector ]
+description: This is teh core plugin for MobRaiders
+website: https://sasukector.dev
+commands:
+  raiders:
+    description: Command to manage the game
+    usage: /raiders [option] [suboption]
