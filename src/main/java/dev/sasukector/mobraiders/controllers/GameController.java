@@ -1,6 +1,7 @@
 package dev.sasukector.mobraiders.controllers;
 
 import dev.sasukector.mobraiders.helpers.ServerUtilities;
+import dev.sasukector.mobraiders.models.Arena;
 import dev.sasukector.mobraiders.models.Team;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,16 +12,15 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class GameController {
 
     private static GameController instance = null;
     private final @Getter Status currentStatus = Status.LOBBY;
-    private @Getter @Setter String arenaType = "";
     private final @Getter List<Team> teams;
+    private final @Getter Map<String, Arena> arenas;
+    private @Getter @Setter Arena currentArena = null;
 
     public enum Status {
         LOBBY, WAITING, PLAYING
@@ -35,6 +35,13 @@ public class GameController {
 
     public GameController() {
         this.teams = new ArrayList<>();
+        this.arenas = new HashMap<>();
+        this.fillArenas();
+    }
+
+    private void fillArenas() {
+        this.arenas.put("plains", new Arena("plains", 0, 100, 0));
+        this.arenas.put("taiga", new Arena("taiga", 0, 100, 0));
     }
 
     public void handlePlayerJoin(Player player) {

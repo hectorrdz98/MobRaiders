@@ -35,7 +35,7 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
                             String subOption = args[1];
                             if (validSubOptions(option).contains(subOption)) {
                                 player.playSound(player.getLocation(), "minecraft:block.note_block.bell", 1, 1);
-                                GameController.getInstance().setArenaType(subOption);
+                                GameController.getInstance().setCurrentArena(GameController.getInstance().getArenas().get(subOption));
                                 ServerUtilities.sendBroadcastMessage(
                                         ServerUtilities.getMiniMessage().parse("Se ha cambiado la arena a <bold><color:#0091AD>" +
                                                 subOption.toUpperCase() + "</color></bold>")
@@ -161,7 +161,7 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
     public List<String> validSubOptions(String option) {
         List<String> valid = new ArrayList<>();
         switch (option.toLowerCase()) {
-            case "arena" -> valid = Arrays.asList("plains", "taiga");
+            case "arena" -> valid = GameController.getInstance().getArenas().keySet().stream().toList();
             case "team" -> valid = Arrays.asList("create", "join", "leave");
             case "join" -> valid = GameController.getInstance().getTeams().stream()
                     .map(team -> Objects.requireNonNull(Bukkit.getPlayer(team.getOwner())).getName().toLowerCase())
