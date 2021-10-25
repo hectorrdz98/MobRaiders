@@ -115,20 +115,31 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
                             }
                         }
                         case "start" -> {
-                            boolean validStart = true;
-                            for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (GameController.getInstance().getPlayerTeam(p) == null) {
-                                    ServerUtilities.sendServerMessage(player, "§cFaltan jugadores de elegir equipo");
-                                    validStart = false;
-                                    break;
+                            if (GameController.getInstance().getCurrentStatus() == GameController.Status.LOBBY) {
+                                boolean validStart = true;
+                                for (Player p : Bukkit.getOnlinePlayers()) {
+                                    if (GameController.getInstance().getPlayerTeam(p) == null) {
+                                        ServerUtilities.sendServerMessage(player, "§cFaltan jugadores de elegir equipo");
+                                        validStart = false;
+                                        break;
+                                    }
                                 }
+                                if (GameController.getInstance().getCurrentArena() == null) {
+                                    ServerUtilities.sendServerMessage(player, "§cFalta seleccionar una arena");
+                                    validStart = false;
+                                }
+                                if (validStart) {
+                                    GameController.getInstance().startGame();
+                                }
+                            } else {
+                                ServerUtilities.sendServerMessage(player, "§cLa partida ya ha empezado");
                             }
-                            if (GameController.getInstance().getCurrentArena() == null) {
-                                ServerUtilities.sendServerMessage(player, "§cFalta seleccionar una arena");
-                                validStart = false;
-                            }
-                            if (validStart) {
-                                GameController.getInstance().startGame();
+                        }
+                        case "stop" -> {
+                            if (GameController.getInstance().getCurrentStatus() != GameController.Status.LOBBY) {
+                                GameController.getInstance().stopGame();
+                            } else {
+                                ServerUtilities.sendServerMessage(player, "§cNo hay una partida en curso");
                             }
                         }
                     }

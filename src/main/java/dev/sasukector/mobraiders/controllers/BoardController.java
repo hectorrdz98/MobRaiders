@@ -4,6 +4,7 @@ import dev.sasukector.mobraiders.MobRaiders;
 import dev.sasukector.mobraiders.helpers.FastBoard;
 import dev.sasukector.mobraiders.models.Team;
 import org.bukkit.Bukkit;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -52,18 +53,23 @@ public class BoardController {
                     lines.add("Jugador: §6" + player.getName());
                     lines.add("En línea: §6" + Bukkit.getOnlinePlayers().size());
                     lines.add("");
-                    if (team != null) {
-                        Player owner = team.getOwnerPlayer();
-                        lines.add("Líder: §d" + (owner != null ? owner.getName() : "Nadie" ));
-                        lines.add("Puntos: §d" + team.getCurrentPoints());
-                        lines.add("Compañeros: §d" + team.getPlayers().size());
-                        lines.add("");
-                    }
                     lines.add("§cEsperando...");
+                }
+                case STARTING, PLAYING -> {
                     lines.add("");
-                    lines.add("§7§oBy Sasukector");
+                    lines.add("Jugador: §6" + player.getName());
+                    lines.add("Muertes: §6" + player.getStatistic(Statistic.DEATHS));
                 }
             }
+            if (team != null) {
+                Player owner = team.getOwnerPlayer();
+                lines.add("");
+                lines.add("Líder: §d" + (owner != null ? owner.getName() : "Nadie" ));
+                lines.add("Puntos: §d" + team.getCurrentPoints());
+                lines.add("Compañeros: §d" + team.getPlayers().size());
+            }
+            lines.add("");
+            lines.add("§7§oBy Sasukector");
             board.updateLines(lines);
         });
     }

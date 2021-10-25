@@ -101,6 +101,16 @@ public class GameController {
         this.teleportCountDown(true);
     }
 
+    public void stopGame() {
+        this.currentStatus = Status.LOBBY;
+        ServerUtilities.sendAnnounceMensaje("El juego ha terminado");
+        Bukkit.getOnlinePlayers().forEach(p -> {
+            p.playSound(p.getLocation(), "minecraft:block.note_block.bell", 1, 1);
+            p.setStatistic(Statistic.DEATHS, 0);
+        });
+        teleportCountDown(false);
+    }
+
     public void teleportCountDown(boolean overworld) {
         AtomicInteger remainingTime = new AtomicInteger(15);
         new BukkitRunnable() {
