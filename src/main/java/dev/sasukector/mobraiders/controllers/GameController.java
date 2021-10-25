@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -143,19 +144,61 @@ public class GameController {
             team.teleportToWorld();
         }
 
-        AtomicInteger remainingTime = new AtomicInteger(30);
+        AtomicInteger remainingTime = new AtomicInteger(120);
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (remainingTime.get() <= 0) {
                     ServerUtilities.sendAnnounceMensaje("¡Inicia la partida!");
-                    Bukkit.getOnlinePlayers().forEach(p ->
-                            p.playSound(p.getLocation(), "minecraft:music.effects.start", 1, 1));
+                    Bukkit.getOnlinePlayers().forEach(p -> {
+                        p.showTitle(Title.title(
+                                Component.text("Raid Challenge 1", TextColor.color(0x0091AD)),
+                                Component.text("¡Encuentra un outpost y prepárate!", TextColor.color(0xB7094C))
+                        ));
+                        p.playSound(p.getLocation(), "minecraft:music.effects.start", 1, 1);
+                    });
                     currentStatus = Status.PLAYING;
                     cancel();
                 } else {
+                    if (remainingTime.get() == 105) {
+                        ServerUtilities.sendSpacedDoubleBroadcastMessage(
+                                ServerUtilities.getMiniMessage().parse("<bold><color:#B7094C>Raid 1</color></bold>"),
+                                Component.text("¡Encuentra una pillager outpost, derrota un capitán para obtener el efecto Bad Omen!", TextColor.color(0xFFFFFF))
+                        , 1);
+                    }
+                    if (remainingTime.get() == 90) {
+                        ServerUtilities.sendSpacedDoubleBroadcastMessage(
+                                ServerUtilities.getMiniMessage().parse("<bold><color:#B7094C>Empezando la raid</color></bold>"),
+                                Component.text("¡Entra a tu villa con el efecto Bad Omen para iniciar la raid!", TextColor.color(0xFFFFFF))
+                        , 1);
+                    }
+                    if (remainingTime.get() == 75) {
+                        ServerUtilities.sendSpacedDoubleBroadcastMessage(
+                                ServerUtilities.getMiniMessage().parse("<bold><color:#B7094C>Derrota tus enemigos</color></bold>"),
+                                Component.text("Cuando comience la raid, llegarán varias oleadas de enemigos ¡Derrótalos lo más pronto posible!", TextColor.color(0xFFFFFF))
+                        , 1);
+                    }
+                    if (remainingTime.get() == 50) {
+                        ServerUtilities.sendSpacedDoubleBroadcastMessage(
+                                ServerUtilities.getMiniMessage().parse("<bold><color:#B7094C>Puntuando</color></bold>"),
+                                Component.text("¡Tu equipo ganará más puntos mientras más rápido terminen la raid!", TextColor.color(0xFFFFFF))
+                        , 1);
+                    }
+                    if (remainingTime.get() == 35) {
+                        ServerUtilities.sendSpacedDoubleBroadcastMessage(
+                                ServerUtilities.getMiniMessage().parse("<bold><color:#B7094C>Puntos extra</color></bold>"),
+                                Component.text("Se darán puntos adicionales al primer equipo en activar la raid ¡Sé veloz!", TextColor.color(0xFFFFFF))
+                        , 1);
+                    }
+                    if (remainingTime.get() == 20) {
+                        ServerUtilities.sendSpacedDoubleBroadcastMessage(
+                                ServerUtilities.getMiniMessage().parse("<bold><color:#B7094C>Tips</color></bold>"),
+                                Component.text("Recuerda cuidar tus recursos, preparar tu equipo y mejorar conforme avanza la raid", TextColor.color(0xFFFFFF))
+                        , 1);
+                    }
                     Bukkit.getOnlinePlayers().forEach(p -> {
                         if (remainingTime.get() <= 3) {
+                            p.showTitle(Title.title(Component.text(remainingTime.get(), TextColor.color(0x0091AD)), Component.empty()));
                             p.playSound(p.getLocation(), "minecraft:block.note_block.xylophone", 1, 1);
                         }
                         p.sendActionBar(

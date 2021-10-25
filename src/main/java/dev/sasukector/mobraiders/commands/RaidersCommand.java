@@ -50,6 +50,7 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
                                         case "create" -> {
                                             Team team = GameController.getInstance().getPlayerTeam(player);
                                             if (team == null) {
+                                                player.playSound(player.getLocation(), "minecraft:block.note_block.bell", 1, 1);
                                                 team = new Team(player);
                                                 GameController.getInstance().getTeams().add(team);
                                                 ServerUtilities.sendBroadcastMessage(
@@ -67,6 +68,7 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
                                                 if (owner != null) {
                                                     Team team = GameController.getInstance().getPlayerTeam(owner);
                                                     if (!team.getPlayers().contains(player.getUniqueId())) {
+                                                        player.playSound(player.getLocation(), "minecraft:block.note_block.bell", 1, 1);
                                                         team.addPlayer(player);
                                                         ServerUtilities.sendBroadcastMessage(
                                                                 ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
@@ -88,6 +90,7 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
                                             if (team != null) {
                                                 Player owner = team.getOwnerPlayer();
                                                 if (owner != null) {
+                                                    player.playSound(player.getLocation(), "minecraft:block.note_block.bell", 1, 1);
                                                     if (team.getOwner().equals(player.getUniqueId())) {
                                                         ServerUtilities.sendBroadcastMessage(
                                                                 ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +

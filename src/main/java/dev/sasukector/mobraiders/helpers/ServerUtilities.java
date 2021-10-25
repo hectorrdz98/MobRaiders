@@ -57,7 +57,18 @@ public class ServerUtilities {
         for (int i = 0; i < spaces; ++i) {
             Bukkit.broadcast(Component.empty());
         }
-        sendBroadcastMessage(message);
+        Bukkit.broadcast(message);
+        for (int i = 0; i < spaces; ++i) {
+            Bukkit.broadcast(Component.empty());
+        }
+    }
+
+    public static void sendSpacedDoubleBroadcastMessage(Component message1, Component message2, int spaces) {
+        for (int i = 0; i < spaces; ++i) {
+            Bukkit.broadcast(Component.empty());
+        }
+        Bukkit.broadcast(message1);
+        Bukkit.broadcast(message2);
         for (int i = 0; i < spaces; ++i) {
             Bukkit.broadcast(Component.empty());
         }
