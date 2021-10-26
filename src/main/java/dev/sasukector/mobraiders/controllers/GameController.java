@@ -98,9 +98,19 @@ public class GameController {
         boolean validStart = true;
         for (Team team : this.teams) {
             team.reloadWorld();
-            if (team.getWorld() == null) {
+            World world = team.getWorld();
+            if (world == null) {
                 validStart = false;
                 break;
+            } else {
+                world.getWorldBorder().setCenter(new Location(world, 0, 0, 0));
+                world.getWorldBorder().setSize(50);
+                world.setFullTime(0);
+                world.setClearWeatherDuration(20 * 60 * 5);
+                world.setDifficulty(org.bukkit.Difficulty.HARD);
+                world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+                world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+                world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
             }
         }
         if (validStart) {
@@ -131,6 +141,7 @@ public class GameController {
                         teleportToOverworld();
                     } else {
                         Bukkit.getOnlinePlayers().forEach(p -> handlePlayerJoin(p));
+                        teams.forEach(Team::unloadAndDeleteArena);
                     }
                     cancel();
                 } else {
@@ -158,6 +169,12 @@ public class GameController {
             @Override
             public void run() {
                 if (remainingTime.get() <= 0) {
+                    for (Team team : teams) {
+                        World world = team.getWorld();
+                        if (world != null) {
+                            world.getWorldBorder().setSize(2000);
+                        }
+                    }
                     ServerUtilities.sendAnnounceMensaje("¡Inicia la partida!");
                     Bukkit.getOnlinePlayers().forEach(p -> {
                         p.showTitle(Title.title(

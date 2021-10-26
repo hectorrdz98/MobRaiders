@@ -108,12 +108,14 @@ public class Team {
         }
     }
 
-    private void unloadAndDeleteArena() {
+    public void unloadAndDeleteArena() {
         String worldPath = this.world.getWorldFolder().getPath();
+        Bukkit.getLogger().info(ChatColor.DARK_AQUA + "Unloaded world for arena_" + this.uuid);
         Bukkit.getServer().unloadWorld("arena_" + this.uuid, false);
         Bukkit.getScheduler().runTaskAsynchronously(MobRaiders.getInstance(), () -> {
             File dir = new File(worldPath);
             try {
+                Bukkit.getLogger().info(ChatColor.DARK_AQUA + "Deleted directory for arena_" + this.uuid);
                 FileUtils.deleteDirectory(dir);
             } catch (Exception e) {
                 Bukkit.getLogger().info(ChatColor.RED + "Error while deleteArena(): " + e);
