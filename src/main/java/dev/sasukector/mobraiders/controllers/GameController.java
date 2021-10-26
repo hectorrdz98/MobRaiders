@@ -95,11 +95,20 @@ public class GameController {
             p.playSound(p.getLocation(), "minecraft:block.note_block.bell", 1, 1);
             p.setStatistic(Statistic.DEATHS, 0);
         });
+        boolean validStart = true;
         for (Team team : this.teams) {
             team.reloadWorld();
+            if (team.getWorld() == null) {
+                validStart = false;
+                break;
+            }
         }
-        this.currentStatus = Status.STARTING;
-        this.teleportCountDown(true);
+        if (validStart) {
+            this.currentStatus = Status.STARTING;
+            this.teleportCountDown(true);
+        } else {
+            ServerUtilities.sendBroadcastMessage("§cOcurrió un error al reiniciar los mundos");
+        }
     }
 
     public void stopGame() {

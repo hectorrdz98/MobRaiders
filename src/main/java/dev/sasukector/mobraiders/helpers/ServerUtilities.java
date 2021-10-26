@@ -1,5 +1,6 @@
 package dev.sasukector.mobraiders.helpers;
 
+import com.google.common.io.Files;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -15,6 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -181,5 +185,11 @@ public class ServerUtilities {
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 0));
         teleportPlayerToRandomLocationInRadius(player,
                 new Location(ServerUtilities.getWorld("overworld"), 0, 100, 0), 1000);
+    }
+
+    public static void copyFile(String from, String to) throws IOException {
+        Path src = Paths.get(from);
+        Path dest = Paths.get(to);
+        Files.copy(src.toFile(), dest.toFile());
     }
 }

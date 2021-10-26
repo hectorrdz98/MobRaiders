@@ -42,8 +42,6 @@ public final class MobRaiders extends JavaPlugin {
     private void loadDimensions() {
         List<String> dimensionNames = new ArrayList<>();
         dimensionNames.add("lobby");
-        dimensionNames.add("plains");
-        dimensionNames.add("taiga");
 
         for (String dimensionName : dimensionNames) {
             getLogger().info(ChatColor.DARK_PURPLE + "Loading dimension " + dimensionName);
