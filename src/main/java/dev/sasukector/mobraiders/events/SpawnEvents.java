@@ -2,6 +2,7 @@ package dev.sasukector.mobraiders.events;
 
 import dev.sasukector.mobraiders.controllers.BoardController;
 import dev.sasukector.mobraiders.controllers.GameController;
+import dev.sasukector.mobraiders.models.Team;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.GameMode;
@@ -39,6 +40,10 @@ public class SpawnEvents implements Listener {
                 Component.text("- ", TextColor.color(0xE38486))
                         .append(Component.text(player.getName(), TextColor.color(0xE38486)))
         );
+        Team team = GameController.getInstance().getPlayerTeam(player);
+        if (team != null) {
+            team.removePlayer(player);
+        }
     }
 
     @EventHandler

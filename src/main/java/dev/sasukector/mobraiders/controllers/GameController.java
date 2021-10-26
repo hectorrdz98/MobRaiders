@@ -3,6 +3,7 @@ package dev.sasukector.mobraiders.controllers;
 import dev.sasukector.mobraiders.MobRaiders;
 import dev.sasukector.mobraiders.helpers.ServerUtilities;
 import dev.sasukector.mobraiders.models.Arena;
+import dev.sasukector.mobraiders.models.Assault;
 import dev.sasukector.mobraiders.models.Team;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -21,8 +23,10 @@ public class GameController {
     private static GameController instance = null;
     private @Getter Status currentStatus = Status.LOBBY;
     private final @Getter List<Team> teams;
+    private final @Getter List<Assault> assaults;
     private final @Getter Map<String, Arena> arenas;
     private @Getter @Setter Arena currentArena = null;
+    private final @Getter int totalAssaults = 5;
 
     public enum Status {
         LOBBY, STARTING, PLAYING
@@ -37,14 +41,117 @@ public class GameController {
 
     public GameController() {
         this.teams = new ArrayList<>();
+        this.assaults = new ArrayList<>();
         this.arenas = new HashMap<>();
         this.fillArenas();
+        this.fillAssaults();
     }
 
     private void fillArenas() {
-        this.arenas.put("plains", new Arena("plains", 0, 100, 0));
-        this.arenas.put("taiga", new Arena("taiga", 0, 100, 0));
+        this.arenas.put("plains", new Arena("plains", 0, 100, 0, -53, 67, 135));
+        this.arenas.put("taiga", new Arena("taiga", 0, 100, 0, 88, 78, 178));
         this.currentArena = this.arenas.get("taiga");
+    }
+
+    private void fillAssaults() {
+        Assault assault1 = new Assault(1);
+        assault1.addMob(EntityType.PILLAGER);
+        assault1.addMob(EntityType.PILLAGER);
+        assault1.addMob(EntityType.PILLAGER);
+        assault1.addMob(EntityType.PILLAGER);
+        assault1.addMob(EntityType.PILLAGER);
+        assault1.addMob(EntityType.PILLAGER);
+        assault1.addMob(EntityType.VINDICATOR);
+        assault1.addMob(EntityType.VINDICATOR);
+        this.assaults.add(assault1);
+
+        Assault assault2 = new Assault(2);
+        assault2.addMob(EntityType.PILLAGER);
+        assault2.addMob(EntityType.PILLAGER);
+        assault2.addMob(EntityType.PILLAGER);
+        assault2.addMob(EntityType.PILLAGER);
+        assault2.addMob(EntityType.PILLAGER);
+        assault2.addMob(EntityType.PILLAGER);
+        assault2.addMob(EntityType.PILLAGER);
+        assault2.addMob(EntityType.PILLAGER);
+        assault2.addMob(EntityType.VINDICATOR);
+        assault2.addMob(EntityType.VINDICATOR);
+        assault2.addMob(EntityType.VINDICATOR);
+        assault2.addMob(EntityType.VINDICATOR);
+        assault2.addMob(EntityType.WITCH);
+        this.assaults.add(assault2);
+
+        Assault assault3 = new Assault(3);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.PILLAGER);
+        assault3.addMob(EntityType.VINDICATOR);
+        assault3.addMob(EntityType.VINDICATOR);
+        assault3.addMob(EntityType.VINDICATOR);
+        assault3.addMob(EntityType.VINDICATOR);
+        assault3.addMob(EntityType.VINDICATOR);
+        assault3.addMob(EntityType.EVOKER);
+        assault3.addMob(EntityType.WITCH);
+        assault3.addMob(EntityType.WITCH);
+        assault3.addMob(EntityType.RAVAGER);
+        this.assaults.add(assault3);
+
+        Assault assault4 = new Assault(4);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.PILLAGER);
+        assault4.addMob(EntityType.VINDICATOR);
+        assault4.addMob(EntityType.VINDICATOR);
+        assault4.addMob(EntityType.VINDICATOR);
+        assault4.addMob(EntityType.VINDICATOR);
+        assault4.addMob(EntityType.VINDICATOR);
+        assault4.addMob(EntityType.VINDICATOR);
+        assault4.addMob(EntityType.VINDICATOR);
+        assault4.addMob(EntityType.VINDICATOR);
+        assault4.addMob(EntityType.EVOKER);
+        assault4.addMob(EntityType.WITCH);
+        assault4.addMob(EntityType.WITCH);
+        assault4.addMob(EntityType.RAVAGER);
+        assault4.addMob(EntityType.RAVAGER);
+        this.assaults.add(assault4);
+
+        Assault assault5 = new Assault(5);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.PILLAGER);
+        assault5.addMob(EntityType.EVOKER);
+        assault5.addMob(EntityType.EVOKER);
+        assault5.addMob(EntityType.EVOKER);
+        assault5.addMob(EntityType.WITCH);
+        assault5.addMob(EntityType.WITCH);
+        assault5.addMob(EntityType.RAVAGER);
+        assault5.addMob(EntityType.RAVAGER);
+        this.assaults.add(assault5);
     }
 
     public void handlePlayerJoin(Player player) {
@@ -62,7 +169,7 @@ public class GameController {
             World lobby = ServerUtilities.getWorld("lobby");
             if (lobby != null) {
                 lobbySpawn = new Location(lobby, 0, 100, 0);
-                ServerUtilities.teleportPlayerToSafeOrderedHeight(player, lobbySpawn);
+                ServerUtilities.teleportEntityToSafeOrderedHeight(player, lobbySpawn);
             } else {
                 player.kick(Component.text("El lobby no ha sido cargado", TextColor.color(0xD9ED92)));
             }
@@ -97,7 +204,9 @@ public class GameController {
         });
         boolean validStart = true;
         for (Team team : this.teams) {
+            team.setCurrentPoints(0);
             team.reloadWorld();
+            team.setStarted(false);
             World world = team.getWorld();
             if (world == null) {
                 validStart = false;
@@ -174,6 +283,9 @@ public class GameController {
                         if (world != null) {
                             world.getWorldBorder().setSize(2000);
                         }
+                        team.teamTimer();
+                        team.summonVillagers();
+                        team.getCurrentAssault().clear();
                     }
                     ServerUtilities.sendAnnounceMensaje("¡Inicia la partida!");
                     Bukkit.getOnlinePlayers().forEach(p -> {

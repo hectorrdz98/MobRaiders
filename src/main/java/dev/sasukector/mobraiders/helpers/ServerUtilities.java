@@ -1,6 +1,8 @@
 package dev.sasukector.mobraiders.helpers;
 
 import com.google.common.io.Files;
+import dev.sasukector.mobraiders.controllers.GameController;
+import dev.sasukector.mobraiders.models.Team;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -12,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -152,39 +155,39 @@ public class ServerUtilities {
         return newLocation;
     }
 
-    public static boolean teleportPlayerToSafeOrderedHeight(Player player, Location location) {
+    public static boolean teleportEntityToSafeOrderedHeight(Entity entity, Location location) {
         List<Integer> ys = Stream.iterate(2, n -> n + 1).limit(location.getWorld().hasCeiling() ? 100 : 200)
                 .sorted(Collections.reverseOrder()).collect(Collectors.toList());
         Location newLocation = getSafeLocation(location, ys);
         if (newLocation != null) {
-            player.teleport(newLocation);
+            entity.teleport(newLocation);
         }
         return newLocation != null;
     }
 
-    public static void teleportPlayerToRandomLocationInRadius(Player player, Location center, int radius) {
+    public static void teleportEntityToRandomLocationInRadius(Entity entity, Location center, int radius) {
         boolean validLocation = false;
         int currentAttempts = 3;
         while (!validLocation && currentAttempts-- > 0) {
             Location location = center.clone().add(random.nextInt(radius * 2) - radius, 0,
                     random.nextInt(radius * 2) - radius);
-            validLocation = teleportPlayerToSafeOrderedHeight(player, location);
+            validLocation = teleportEntityToSafeOrderedHeight(entity, location);
         }
         if (!validLocation || currentAttempts <= 0) {
-            sendServerMessage(player, "§cOcurrió un error al teletransportarte a una ubicación segura, será teletransporte aleatorio protegido");
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 300, 0));
             center.setY(center.getWorld().hasCeiling() ? 60 : 120);
-            player.teleport(center);
+            entity.teleport(center);
         }
     }
 
     public static void safeTeleportPlayer(Player player) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 200, 0));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 9));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 0));
-        teleportPlayerToRandomLocationInRadius(player,
-                new Location(ServerUtilities.getWorld("overworld"), 0, 100, 0), 1000);
+        Team team = GameController.getInstance().getPlayerTeam(player);
+        if (team != null && team.getWorld() != null) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 200, 0));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 9));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 0));
+            player.teleport(team.getSpawn());
+        }
     }
 
     public static void copyFile(String from, String to) throws IOException {

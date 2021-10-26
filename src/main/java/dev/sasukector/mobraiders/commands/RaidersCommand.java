@@ -145,6 +145,16 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
                                 ServerUtilities.sendServerMessage(player, "§cNo hay una partida en curso");
                             }
                         }
+                        case "summon" -> {
+                            Team team = GameController.getInstance().getPlayerTeam(player);
+                            if (team != null && GameController.getInstance().getCurrentStatus() == GameController.Status.PLAYING) {
+                                ServerUtilities.sendBroadcastMessage(
+                                        ServerUtilities.getMiniMessage().parse("<bold><color:#0091AD>" +
+                                                player.getName() + "</color></bold> re invocó la oleada")
+                                );
+                                team.spawnRemainingAssault();
+                            }
+                        }
                     }
                 } else {
                     ServerUtilities.sendServerMessage(player, "§cSelecciona una opción válida");
@@ -189,6 +199,7 @@ public class RaidersCommand implements CommandExecutor, TabExecutor {
         valid.add("stop");
         valid.add("arena");
         valid.add("team");
+        valid.add("summon");
         Collections.sort(valid);
         return valid;
     }
