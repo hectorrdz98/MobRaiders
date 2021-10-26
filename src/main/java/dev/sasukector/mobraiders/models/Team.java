@@ -261,10 +261,16 @@ public class Team {
         if (++this.currentRound > GameController.getInstance().getTotalAssaults()) {
             Player owner = this.getOwnerPlayer();
             if (owner != null) {
-                ServerUtilities.sendAnnounceMensaje("El equipo de " + owner + " ha completado todas las oleadas");
+                ServerUtilities.sendAnnounceMensaje("El equipo de " + owner.getName() + " ha completado todas las oleadas");
                 GameController.getInstance().stopGame();
             }
         } else {
+            switch ((int) GameController.getInstance().getTeams().stream()
+                    .filter(t -> t.getCurrentRound() >= currentRound && t.getUuid() != this.uuid).count()) {
+                case 0 -> this.addPoints(3);
+                case 1 -> this.addPoints(2);
+                default -> this.addPoints(1);
+            }
             AtomicInteger remainingTime = new AtomicInteger(20);
             new BukkitRunnable() {
                 @Override

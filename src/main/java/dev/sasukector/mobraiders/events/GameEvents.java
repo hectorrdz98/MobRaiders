@@ -40,10 +40,16 @@ public class GameEvents implements Listener {
         if (team != null && !team.isStarted()) {
             team.setStarted(true);
             Player owner = team.getOwnerPlayer();
+            String message = "";
             if (owner != null) {
-                ServerUtilities.sendBroadcastMessage(ServerUtilities.getMiniMessage().parse("El equipo de <bold><color:#0091AD>" +
-                        owner.getName() + "</color></bold> ha iniciado la raid"));
+                message += "El equipo de <bold><color:#0091AD>" +
+                        owner.getName() + "</color></bold> ha iniciado la raid";
             }
+            if (GameController.getInstance().getTeams().stream().noneMatch(t -> t.isStarted() && t.getUuid() != team.getUuid())) {
+                message += " primero (+2 puntos)";
+                team.addPoints(2);
+            }
+            ServerUtilities.sendBroadcastMessage(ServerUtilities.getMiniMessage().parse(message));
             EventsController.getInstance().startNewWave(team);
         }
     }

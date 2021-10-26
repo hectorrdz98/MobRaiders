@@ -17,13 +17,6 @@ public class EventsController {
     }
 
     public void startNewWave(Team team) {
-        switch ((int) GameController.getInstance().getTeams().stream()
-                .filter(t -> t.getCurrentRound() >= team.getCurrentRound()).count()) {
-            case 0 -> team.addPoints(3);
-            case 1 -> team.addPoints(2);
-            default -> team.addPoints(1);
-        }
-        team.addPoints(1);
         team.getPlayersList().forEach(p -> {
             p.playSound(p.getLocation(), "minecraft:music.effects.board", 1f, 1f);
             p.showTitle(
